@@ -37,6 +37,7 @@ public:
 	bool ** delivering;
 	uint32_t next_tid;
 private:
+	using workload::init_schema;
 	uint64_t num_wh;
 	void init_tab_item();
 	void init_tab_wh(uint32_t wid);

@@ -157,7 +157,7 @@ final:
 		if (valid) {
 			if (history)
 				assert(history->tn == tnc);
-			tnc ++;
+			tnc = tnc + 1;
 			wset->tn = tnc;
 			STACK_PUSH(history, wset);
 			his_len ++;

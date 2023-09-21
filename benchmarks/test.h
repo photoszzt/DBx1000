@@ -17,6 +17,7 @@ public:
 	INDEX * the_index;
 	table_t * the_table;
 private:
+	using workload::init_schema;
 	uint64_t time;
 };
 

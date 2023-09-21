@@ -23,7 +23,7 @@ private:
 	int 		_arena_id;
 	int 		_block_size;
 	FreeBlock * _head;
-	char 		_pad[128 - sizeof(int)*3 - sizeof(void *)*2 - 8];
+	[[maybe_unused]] char 		_pad[128 - sizeof(int)*3 - sizeof(void *)*2 - 8];
 };
 
 class mem_alloc {

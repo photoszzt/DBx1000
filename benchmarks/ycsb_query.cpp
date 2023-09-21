@@ -60,7 +60,7 @@ void ycsb_query::gen_requests(uint64_t thd_id, workload * h_wl) {
 #if CC_ALG == HSTORE
 	assert(g_virtual_part_cnt == g_part_cnt);
 #endif
-	int access_cnt = 0;
+	// int access_cnt = 0;
 	set<uint64_t> all_keys;
 	part_num = 0;
 	double r = 0;
@@ -119,7 +119,7 @@ void ycsb_query::gen_requests(uint64_t thd_id, workload * h_wl) {
 		if (req->rtype == RD || req->rtype == WR) {
 			if (all_keys.find(req->key) == all_keys.end()) {
 				all_keys.insert(req->key);
-				access_cnt ++;
+				// access_cnt ++;
 			} else continue;
 		} else {
 			bool conflict = false;
@@ -133,7 +133,7 @@ void ycsb_query::gen_requests(uint64_t thd_id, workload * h_wl) {
 			else {
 				for (UInt32 i = 0; i < req->scan_len; i++)
 					all_keys.insert( (row_id + i) * g_part_cnt + part_id);
-				access_cnt += SCAN_LEN;
+				// access_cnt += SCAN_LEN;
 			}
 		}
 		rid ++;

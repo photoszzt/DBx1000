@@ -47,6 +47,7 @@ public:
 	RC	 		index_read(idx_key_t key, itemid_t * &item,
 							int part_id=-1, int thd_id=0);
 private:
+	using index_base::init;
 	void get_latch(BucketHeader * bucket);
 	void release_latch(BucketHeader * bucket);
 	

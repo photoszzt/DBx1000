@@ -64,6 +64,6 @@ void TestWorkload::summarize() {
 		for (UInt32 tid = 0; tid < g_thread_cnt; tid ++) {
 			total_wait_cnt += stats._stats[tid]->wait_cnt;
 		}
-		printf("CONFLICT TEST. PASSED.\n");
+		printf("CONFLICT TEST. PASSED. %d\n", total_wait_cnt);
 	}
 }

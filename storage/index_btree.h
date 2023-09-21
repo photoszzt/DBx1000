@@ -37,6 +37,8 @@ public:
 	RC 			index_next(uint64_t thd_id, itemid_t * &item, bool samekey = false);
 
 private:
+	using index_base::init;
+    using index_base::index_read;
 	// index structures may have part_cnt = 1 or PART_CNT.
 	uint64_t part_cnt;
 	RC			make_lf(uint64_t part_id, bt_node *& node);

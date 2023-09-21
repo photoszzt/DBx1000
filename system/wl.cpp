@@ -25,7 +25,7 @@ RC workload::init_schema(string schema_file) {
 			tname = &line[6];
 			schema = (Catalog *) _mm_malloc(sizeof(Catalog), CL_SIZE);
 			getline(fin, line);
-			int col_count = 0;
+			// int col_count = 0;
 			// Read all fields for this table.
 			vector<string> lines;
 			while (line.length() > 1) {
@@ -57,7 +57,7 @@ RC workload::init_schema(string schema_file) {
 				}
 				assert(elem_num == 3);
                 schema->add_col((char *)name.c_str(), size, (char *)type.c_str());
-				col_count ++;
+				// col_count ++;
 			}
 			table_t * cur_tab = (table_t *) _mm_malloc(sizeof(table_t), CL_SIZE);
 			cur_tab->init(schema);
