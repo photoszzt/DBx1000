@@ -1,4 +1,4 @@
-#pragma once 
+#pragma once
 
 #include <cassert>
 #include "global.h"
@@ -60,7 +60,7 @@ public:
 	void set_value(const char * col_name, void * ptr);
 	char * get_value(int id);
 	char * get_value(char * col_name);
-	
+
 	DECL_SET_VALUE(uint64_t);
 	DECL_SET_VALUE(int64_t);
 	DECL_SET_VALUE(double);
@@ -82,7 +82,7 @@ public:
 	// for concurrency control. can be lock, timestamp etc.
 	RC get_row(access_t type, txn_man * txn, row_t *& row);
 	void return_row(access_t type, txn_man * txn, row_t * row);
-	
+
   #if CC_ALG == DL_DETECT || CC_ALG == NO_WAIT || CC_ALG == WAIT_DIE
     Row_lock * manager;
   #elif CC_ALG == TIMESTAMP
@@ -102,9 +102,12 @@ public:
   #endif
 	char * data;
 	table_t * table;
-private:
+// private:
 	// primary key should be calculated from the data stored in the row.
 	uint64_t 		_primary_key;
 	uint64_t		_part_id;
 	uint64_t 		_row_id;
 };
+static_assert(sizeof(row_t) == 48);
+static_assert(std::is_standard_layout_v<row_t> == true);
+static_assert(std::is_trivial_v<row_t> == true);

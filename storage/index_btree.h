@@ -1,10 +1,10 @@
 #ifndef _BTREE_H_
 #define _BTREE_H_
 
+#include <type_traits>
 #include "global.h"
 #include "helper.h"
 #include "index_base.h"
-
 
 typedef struct bt_node {
 	// TODO bad hack!
@@ -19,32 +19,41 @@ typedef struct bt_node {
 	latch_t latch_type;
 	UInt32 share_cnt;
 } bt_node;
+static_assert(std::is_standard_layout_v<bt_node> == true);
+static_assert(std::is_trivial_v<bt_node> == true);
 
 struct glob_param {
 	uint64_t part_id;
 };
+static_assert(std::is_standard_layout_v<glob_param> == true);
+static_assert(std::is_trivial_v<glob_param> == true);
+static_assert(sizeof(glob_param) == 8);
 
-class index_btree : public index_base {
+class index_btree {
 public:
+	RC 			init() { return RCOK; };
 	RC			init(uint64_t part_cnt);
 	RC			init(uint64_t part_cnt, table_t * table);
-	bool 		index_exist(idx_key_t key); // check if the key exist. 
+	bool 		index_exist(idx_key_t key); // check if the key exist.
 	RC 			index_insert(idx_key_t key, itemid_t * item, int part_id = -1);
-	RC	 		index_read(idx_key_t key, itemid_t * &item, 
+	RC	 		index_read(idx_key_t key, itemid_t * &item,
 					uint64_t thd_id, int64_t part_id = -1);
 	RC	 		index_read(idx_key_t key, itemid_t * &item, int part_id = -1);
 	RC	 		index_read(idx_key_t key, itemid_t * &item);
 	RC 			index_next(uint64_t thd_id, itemid_t * &item, bool samekey = false);
+	// TODO implement index_remove
+	RC			index_remove(idx_key_t key) { return RCOK; };
+	table_t* table;
 
 private:
-	using index_base::init;
-    using index_base::index_read;
+	// using index_base::init;
+    // using index_base::index_read;
 	// index structures may have part_cnt = 1 or PART_CNT.
 	uint64_t part_cnt;
 	RC			make_lf(uint64_t part_id, bt_node *& node);
 	RC			make_nl(uint64_t part_id, bt_node *& node);
 	RC		 	make_node(uint64_t part_id, bt_node *& node);
-	
+
 	RC 			start_new_tree(glob_param params, idx_key_t key, itemid_t * item);
 	RC 			find_leaf(glob_param params, idx_key_t key, idx_acc_t access_type, bt_node *& leaf, bt_node  *& last_ex);
 	RC 			find_leaf(glob_param params, idx_key_t key, idx_acc_t access_type, bt_node *& leaf);
@@ -56,7 +65,7 @@ private:
 	RC 			insert_into_new_root(glob_param params, bt_node * left, idx_key_t key, bt_node * right);
 
 	int			leaf_has_key(bt_node * leaf, idx_key_t key);
-	
+
 	UInt32 		cut(UInt32 length);
 	UInt32	 	order; // # of keys in a node(for both leaf and non-leaf)
 	bt_node ** 	roots; // each partition has a different root
@@ -72,5 +81,9 @@ private:
 	bt_node *** cur_leaf_per_thd;
 	UInt32 ** 		cur_idx_per_thd;
 };
+static_assert(IsIndex<index_btree>);
+// static_assert(std::is_standard_layout_v<index_btree> == true);
+static_assert(std::is_trivial_v<index_btree> == true);
+static_assert(sizeof(index_btree) == 48);
 
 #endif

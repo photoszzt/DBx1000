@@ -1,4 +1,4 @@
-#include "global.h"	
+#include "global.h"
 #include "index_hash.h"
 #include "mem_alloc.h"
 #include "table.h"
@@ -15,7 +15,7 @@ RC IndexHash::init(uint64_t bucket_cnt, int part_cnt) {
 	return RCOK;
 }
 
-RC 
+RC
 IndexHash::init(int part_cnt, table_t * table, uint64_t bucket_cnt) {
 	init(bucket_cnt, part_cnt);
 	this->table = table;
@@ -26,18 +26,18 @@ bool IndexHash::index_exist(idx_key_t key) {
 	assert(false);
 }
 
-void 
+void
 IndexHash::get_latch(BucketHeader * bucket) {
 	while (!ATOM_CAS(bucket->locked, false, true)) {}
 }
 
-void 
+void
 IndexHash::release_latch(BucketHeader * bucket) {
 	bool ok = ATOM_CAS(bucket->locked, true, false);
 	assert(ok);
 }
 
-	
+
 RC IndexHash::index_insert(idx_key_t key, itemid_t * item, int part_id) {
 	RC rc = RCOK;
 	uint64_t bkt_idx = hash(key);
@@ -45,10 +45,10 @@ RC IndexHash::index_insert(idx_key_t key, itemid_t * item, int part_id) {
 	BucketHeader * cur_bkt = &_buckets[part_id][bkt_idx];
 	// 1. get the ex latch
 	get_latch(cur_bkt);
-	
+
 	// 2. update the latch list
 	cur_bkt->insert_item(key, item, part_id);
-	
+
 	// 3. release the latch
 	release_latch(cur_bkt);
 	return rc;
@@ -68,8 +68,8 @@ RC IndexHash::index_read(idx_key_t key, itemid_t * &item, int part_id) {
 
 }
 
-RC IndexHash::index_read(idx_key_t key, itemid_t * &item, 
-						int part_id, int thd_id) {
+RC IndexHash::index_read(idx_key_t key, itemid_t * &item,
+						int part_id, uint64_t thd_id) {
 	uint64_t bkt_idx = hash(key);
 	assert(bkt_idx < _bucket_cnt_per_part);
 	BucketHeader * cur_bkt = &_buckets[part_id][bkt_idx];
@@ -90,9 +90,9 @@ void BucketHeader::init() {
 	locked = false;
 }
 
-void BucketHeader::insert_item(idx_key_t key, 
-		itemid_t * item, 
-		int part_id) 
+void BucketHeader::insert_item(idx_key_t key,
+		itemid_t * item,
+		int part_id)
 {
 	BucketNode * cur_node = first_node;
 	BucketNode * prev_node = NULL;
@@ -102,8 +102,8 @@ void BucketHeader::insert_item(idx_key_t key,
 		prev_node = cur_node;
 		cur_node = cur_node->next;
 	}
-	if (cur_node == NULL) {		
-		BucketNode * new_node = (BucketNode *) 
+	if (cur_node == NULL) {
+		BucketNode * new_node = (BucketNode *)
 			mem_allocator.alloc(sizeof(BucketNode), part_id );
 		new_node->init(key);
 		new_node->items = item;
@@ -120,7 +120,7 @@ void BucketHeader::insert_item(idx_key_t key,
 	}
 }
 
-void BucketHeader::read_item(idx_key_t key, itemid_t * &item, const char * tname) 
+void BucketHeader::read_item(idx_key_t key, itemid_t * &item, const char * tname)
 {
 	BucketNode * cur_node = first_node;
 	while (cur_node != NULL) {

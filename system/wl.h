@@ -1,4 +1,4 @@
-#pragma once 
+#pragma once
 
 #include "global.h"
 
@@ -10,7 +10,7 @@ class Catalog;
 class lock_man;
 class txn_man;
 class thread_t;
-class index_base;
+// class index_base;
 class Timestamp;
 class Mvcc;
 
@@ -22,13 +22,13 @@ public:
 	map<string, table_t *> tables;
 	map<string, INDEX *> indexes;
 
-	
+
 	// initialize the tables and indexes.
 	virtual RC init();
 	virtual RC init_schema(string schema_file);
 	virtual RC init_table()=0;
 	virtual RC get_txn_man(txn_man *& txn_manager, thread_t * h_thd)=0;
-	
+
 	bool sim_done;
 protected:
 	void index_insert(string index_name, uint64_t key, row_t * row);
