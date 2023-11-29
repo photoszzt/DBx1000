@@ -100,12 +100,12 @@ private:
 	txnid_t 		txn_id;
 	ts_t 			timestamp;
 
-	bool _write_copy_ptr;
 #if CC_ALG == TICTOC || CC_ALG == SILO
 	bool 			_pre_abort;
 	bool 			_validation_no_wait;
 #endif
 #if CC_ALG == TICTOC
+	bool _write_copy_ptr;
 	bool			_atomic_timestamp;
 	ts_t 			_max_wts;
 	// the following methods are defined in concurrency_control/tictoc.cpp
